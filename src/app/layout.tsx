@@ -24,6 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <link rel="icon" href="/arms-400.png" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
