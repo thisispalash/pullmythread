@@ -17,6 +17,7 @@ export default function Home() {
   const [ color, setColor ] = useState('hsl(0,0%,50%)');
   const [ bgColor, setBgColor ] = useState('hsla(0,0%,50%,0.1)');
   const [ title, setTitle ] = useState('Pull My Thread');
+  const [ remountKey, setRemountKey ] = useState(0);
 
   const stories = [
     Amour,
@@ -33,9 +34,11 @@ export default function Home() {
   ];
 
   const shuffle = () => {
+    setRemountKey(prev => prev + 1);
+    
     const random = Math.floor(Math.random() * stories.length);
     if (random === index) {
-      shuffle();
+      setTimeout(() => shuffle(), 0);
     } else {
       setIndex(random);
     }
@@ -56,6 +59,8 @@ export default function Home() {
 
   // Modify the useEffect to handle the telescopic text functionality
   useEffect(() => {
+    console.log("Setting up telescopic text functionality");
+    
     // Add essential CSS for telescopic functionality
     const style = document.createElement('style');
     style.textContent = `
@@ -79,14 +84,13 @@ export default function Home() {
         cursor: pointer;
         text-decoration: underline;
       }
-      
-      /* Remove the automatic space addition */
-      /* .poem span.on::before {
-        content: " ";
-        white-space: pre;
-      } */
     `;
-    document.head.appendChild(style);
+    
+    // Only add the style if it doesn't already exist
+    if (!document.getElementById('telescopic-style')) {
+      style.id = 'telescopic-style';
+      document.head.appendChild(style);
+    }
     
     // This function will be called whenever new content is loaded
     const handleTelescopicLinks = () => {
@@ -108,7 +112,11 @@ export default function Home() {
       console.log("Telescopic link clicked");
       
       const link = e.currentTarget;
+      if (!link) return; // Safety check
+      
       const openedby = link.getAttribute('data-o');
+      if (!openedby) return; // Safety check
+      
       console.log(`Opening elements with data-ob="${openedby}"`);
       
       // Find all elements with matching data-ob attribute
@@ -121,51 +129,77 @@ export default function Home() {
         element.classList.add('on');
       });
       
-      // Unwrap the link (replace with its content)
-      const parent = link.parentNode;
-      if (parent) {
-        // Check if we need to add a space after the content
-        const nextNode = link.nextSibling;
-        const needsSpace = nextNode && 
-                           nextNode.nodeType === Node.TEXT_NODE && 
-                           nextNode.textContent && 
-                           !nextNode.textContent.startsWith(' ');
+      try {
+        // Get the parent node
+        const parent = link.parentNode;
+        if (!parent) return; // Safety check
         
-        // Insert link contents
+        // Create a document fragment to hold the link's contents
+        const fragment = document.createDocumentFragment();
+        
+        // Move all child nodes to the fragment
         while (link.firstChild) {
-          parent.insertBefore(link.firstChild, link);
+          fragment.appendChild(link.firstChild);
         }
         
-        // Only add space if needed
-        if (needsSpace) {
-          const spaceNode = document.createTextNode(' ');
-          parent.insertBefore(spaceNode, link);
+        // Insert the fragment before the link
+        parent.insertBefore(fragment, link);
+        
+        // Add a space if needed (check if the next node is text and doesn't start with punctuation)
+        const nextNode = link.nextSibling;
+        if (nextNode && 
+            nextNode.nodeType === Node.TEXT_NODE && 
+            nextNode.textContent && 
+            !/^[\s.,;:!?'"()-]/.test(nextNode.textContent)) {
+          parent.insertBefore(document.createTextNode(' '), link);
         }
         
-        // Remove the original link
+        // Remove the link
         parent.removeChild(link);
+      } catch (error) {
+        console.error("Error handling telescopic click:", error);
       }
     };
 
-    // Run once DOM is ready
-    handleTelescopicLinks();
+    // Initial setup with a delay to ensure DOM is ready
+    const setupTimeout = setTimeout(handleTelescopicLinks, 100);
     
     // Set up a MutationObserver to detect when new content is added
-    const observer = new MutationObserver(handleTelescopicLinks);
+    const observer = new MutationObserver(() => {
+      setTimeout(handleTelescopicLinks, 100);
+    });
+    
     observer.observe(document.body, { 
       childList: true, 
       subtree: true 
     });
     
+    // Return cleanup function
     return () => {
-      // Clean up the style element when component unmounts
-      document.head.removeChild(style);
-      observer.disconnect();
-      document.querySelectorAll('a[data-o]').forEach(link => {
-        link.removeEventListener('click', handleTelescopicClick);
-      });
+      console.log("Cleaning up telescopic text functionality");
+      
+      // Clear the setup timeout
+      clearTimeout(setupTimeout);
+      
+      // Disconnect observer
+      try {
+        observer.disconnect();
+        console.log("Observer disconnected");
+      } catch (error) {
+        console.error("Error disconnecting observer:", error);
+      }
+      
+      // Remove event listeners
+      try {
+        document.querySelectorAll('a[data-o]').forEach(link => {
+          link.removeEventListener('click', handleTelescopicClick);
+        });
+        console.log("Event listeners removed");
+      } catch (error) {
+        console.error("Error removing event listeners:", error);
+      }
     };
-  }, []);
+  }, [remountKey]);
 
   return (
     <main 
@@ -178,13 +212,14 @@ export default function Home() {
         'py-12 flex flex-col items-center gap-8',
       )}
     >
-      <span className="text-4xl font-system">{title}</span>
+      <span className="w-3/5 text-left text-4xl font-system">{title}</span>
       <div 
         className={clsx(
           'w-4/5 px-32',
           'flex flex-col gap-3',
           'font-user text-lg',
         )}
+        key={remountKey}
       >
         {stories[index]()}
       </div>
