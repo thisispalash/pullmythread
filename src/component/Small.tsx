@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function Small() {
   return (
-    <div className="poem">
+    <div className="poem flex flex-col gap-3">
       <p>
         The world is <a data-o="1">large</a>
         <br />

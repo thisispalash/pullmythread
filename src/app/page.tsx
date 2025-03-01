@@ -79,6 +79,12 @@ export default function Home() {
         cursor: pointer;
         text-decoration: underline;
       }
+      
+      /* Remove the automatic space addition */
+      /* .poem span.on::before {
+        content: " ";
+        white-space: pre;
+      } */
     `;
     document.head.appendChild(style);
     
@@ -105,7 +111,12 @@ export default function Home() {
       const openedby = link.getAttribute('data-o');
       console.log(`Opening elements with data-ob="${openedby}"`);
       
-      document.querySelectorAll(`[data-ob="${openedby}"]`).forEach(element => {
+      // Find all elements with matching data-ob attribute
+      const elements = document.querySelectorAll(`[data-ob="${openedby}"]`);
+      console.log(`Found ${elements.length} elements to reveal`);
+      
+      elements.forEach(element => {
+        console.log(`Revealing element:`, element);
         element.classList.remove('off');
         element.classList.add('on');
       });
@@ -113,9 +124,25 @@ export default function Home() {
       // Unwrap the link (replace with its content)
       const parent = link.parentNode;
       if (parent) {
+        // Check if we need to add a space after the content
+        const nextNode = link.nextSibling;
+        const needsSpace = nextNode && 
+                           nextNode.nodeType === Node.TEXT_NODE && 
+                           nextNode.textContent && 
+                           !nextNode.textContent.startsWith(' ');
+        
+        // Insert link contents
         while (link.firstChild) {
           parent.insertBefore(link.firstChild, link);
         }
+        
+        // Only add space if needed
+        if (needsSpace) {
+          const spaceNode = document.createTextNode(' ');
+          parent.insertBefore(spaceNode, link);
+        }
+        
+        // Remove the original link
         parent.removeChild(link);
       }
     };
@@ -154,8 +181,8 @@ export default function Home() {
       <span className="text-4xl font-system">{title}</span>
       <div 
         className={clsx(
-          'w-full px-32',
-          'flex flex-col',
+          'w-4/5 px-32',
+          'flex flex-col gap-3',
           'font-user text-lg',
         )}
       >

@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function Amour() {
   return (
-    <div className="poem">
+    <div className="poem flex flex-col gap-3">
       <p>
         <a data-o="1">Affected</a>
         <span data-ob="1">
