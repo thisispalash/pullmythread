@@ -1,7 +1,8 @@
 export const metadata = {
   "emotion": "pensiveness",
   "hue": 220,
-  "saturation": 37
+  "saturation": 37,
+  "title": "i feel small today"
 }
 
 export default function Small() {

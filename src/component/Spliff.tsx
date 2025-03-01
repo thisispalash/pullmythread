@@ -1,7 +1,8 @@
 export const metadata = {
   "emotion": "interest",
   "hue": 20,
-  "saturation": 50
+  "saturation": 50,
+  "title": "Rolling a spliff"
 }
 
 

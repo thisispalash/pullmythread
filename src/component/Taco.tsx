@@ -1,7 +1,8 @@
 export const metadata = {
   "emotion": "joy",
   "hue": 40,
-  "saturation": 50
+  "saturation": 50,
+  "title": "Taco Tuesday"
 }
 
 export default function Taco() {

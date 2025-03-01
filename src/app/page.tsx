@@ -16,6 +16,7 @@ export default function Home() {
   const [ index, setIndex ] = useState(0);
   const [ color, setColor ] = useState('hsl(0,0%,50%)');
   const [ bgColor, setBgColor ] = useState('hsla(0,0%,50%,0.1)');
+  const [ title, setTitle ] = useState('Pull My Thread');
 
   const stories = [
     Amour,
@@ -32,8 +33,12 @@ export default function Home() {
   ];
 
   const shuffle = () => {
-    console.log('shuffle');
-    setIndex(Math.floor(Math.random() * stories.length));
+    const random = Math.floor(Math.random() * stories.length);
+    if (random === index) {
+      shuffle();
+    } else {
+      setIndex(random);
+    }
   };
 
   // const setColor = () => {
@@ -46,8 +51,94 @@ export default function Home() {
     const data = metadata[index];
     setColor(`hsl(${data.hue}, ${data.saturation}%, 50%)`);
     setBgColor(`hsla(${data.hue}, ${data.saturation}%, 50%, 0.1)`);
-  }, [index, metadata]);
+    setTitle(data.title);
+  }, [index]);
 
+  // Modify the useEffect to handle the telescopic text functionality
+  useEffect(() => {
+    // Add essential CSS for telescopic functionality
+    const style = document.createElement('style');
+    style.textContent = `
+      .poem span {
+        display: none;
+      }
+      
+      .poem span.on {
+        display: inline;
+      }
+      
+      .poem p.off {
+        display: none;
+      }
+      
+      .poem p.on {
+        display: block;
+      }
+      
+      .poem a {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // This function will be called whenever new content is loaded
+    const handleTelescopicLinks = () => {
+      console.log("Setting up telescopic links");
+      const links = document.querySelectorAll('a[data-o]');
+      console.log(`Found ${links.length} telescopic links`);
+      
+      links.forEach(link => {
+        // Remove existing listeners to prevent duplicates
+        link.removeEventListener('click', handleTelescopicClick);
+        // Add fresh listener
+        link.addEventListener('click', handleTelescopicClick);
+      });
+    };
+    
+    // Separate the click handler function
+    const handleTelescopicClick = (e) => {
+      e.preventDefault();
+      console.log("Telescopic link clicked");
+      
+      const link = e.currentTarget;
+      const openedby = link.getAttribute('data-o');
+      console.log(`Opening elements with data-ob="${openedby}"`);
+      
+      document.querySelectorAll(`[data-ob="${openedby}"]`).forEach(element => {
+        element.classList.remove('off');
+        element.classList.add('on');
+      });
+      
+      // Unwrap the link (replace with its content)
+      const parent = link.parentNode;
+      if (parent) {
+        while (link.firstChild) {
+          parent.insertBefore(link.firstChild, link);
+        }
+        parent.removeChild(link);
+      }
+    };
+
+    // Run once DOM is ready
+    handleTelescopicLinks();
+    
+    // Set up a MutationObserver to detect when new content is added
+    const observer = new MutationObserver(handleTelescopicLinks);
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true 
+    });
+    
+    return () => {
+      // Clean up the style element when component unmounts
+      document.head.removeChild(style);
+      observer.disconnect();
+      document.querySelectorAll('a[data-o]').forEach(link => {
+        link.removeEventListener('click', handleTelescopicClick);
+      });
+    };
+  }, []);
 
   return (
     <main 
@@ -55,11 +146,17 @@ export default function Home() {
         '--color': color,
         '--bg-color': bgColor,
       } as React.CSSProperties}
-      className='h-screen overflow-y-auto text-[var(--color)] bg-[var(--bg-color)]'
+      className={clsx(
+        'h-screen overflow-y-auto text-[var(--color)] bg-[var(--bg-color)]',
+        'py-12 flex flex-col items-center gap-8',
+      )}
     >
+      <span className="text-4xl font-system">{title}</span>
       <div 
         className={clsx(
-          'flex flex-col items-center justify-center',
+          'w-full px-32',
+          'flex flex-col',
+          'font-user text-lg',
         )}
       >
         {stories[index]()}

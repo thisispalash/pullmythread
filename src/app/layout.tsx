@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Kalam, Comic_Neue } from 'next/font/google';
 import './globals.css';
 
+// import $ from 'jquery';
+
 const kalam = Kalam({
   variable: '--font-user',
   subsets: ['latin'],
@@ -28,7 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/arms-400.png" />
-        <script src="/telescopic.js" async></script>
+        {/* <script src="/telescopic.js" async></script> */}
       </head>
       <body
         className={`

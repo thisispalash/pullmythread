@@ -1,7 +1,8 @@
 export const metadata = {
   "emotion": "apprehension",
   "hue": 80,
-  "saturation": 50
+  "saturation": 50,
+  "title": "Amour Futile"
 }
 
 export default function Amour() {
