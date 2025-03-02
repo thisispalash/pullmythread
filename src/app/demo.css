@@ -1,0 +1,210 @@
+html {
+  background: #95A5A7;
+  font-family: monospace;
+  height: 100%;
+}
+
+main {
+  margin: 3vmin 5vmin;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 5vmin;
+  min-height: 15vmin;
+  background-image: url('arms-400.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+table {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.button {
+  min-width: 19vmin;
+  min-height: 19vmin;
+  margin: 1vmin 4vmin;
+}
+
+#subtitle {
+  font-size: 1.33rem;
+}
+
+.poem {
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+.poem span {
+  display: none;
+}
+
+.poem span.on {
+  display: inline;
+}
+
+.poem p.off {
+  display: none;
+}
+
+.poem p.on {
+  display: block;
+}
+
+.poem a {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.poem a:hover, 
+.poem a:focus {
+  color: #A2B4B6;
+}
+
+/** modal related styles **/
+
+.modal {
+  z-index: 1;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.4);
+  
+  /* Fade in the background */
+  animation-name: fadeIn;
+  animation-duration: 0.4s;
+  -webkit-animation-name: fadeIn; 
+  -webkit-animation-duration: 0.4s;
+}
+
+.modal-content {
+  bottom: 0;
+  position: relative;
+  background-color: #889698;
+  width: 80%;
+  margin: 3vmin auto 7vmin;
+  text-align: left;
+  overflow: auto;
+  border-radius: 2vmin;
+
+  /* Slide in the content */
+  animation-name: slideIn;
+  animation-duration: 0.4s;
+  -webkit-animation-name: slideIn;
+  -webkit-animation-duration: 0.4s;
+}
+
+.modal-header {
+  padding: 2vmin 24vmin 0;
+  font-size: 1.5rem;
+}
+
+.modal-body {
+  padding: 0 24vmin 2vmin;
+}
+
+.close {
+  color: white;
+  float: right;
+  font-size: 1.2rem;
+  font-weight: bold;
+  /* make close button sticky */
+  position: fixed;
+  bottom:0; right:0;
+  margin: 3vmin;
+}
+.close:hover,
+.close:focus {
+  color: #A2B4B6;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/** end modal related styles **/
+
+
+/** media queries **/
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+
+}
+
+/** end media queries **/
+
+
+/** neumorphic styles **/
+
+.clicked {
+  background: #95A5A7;
+  border-radius: 15%;
+  box-shadow: inset 9.91px 9.91px 15px #889698, inset -9.91px -9.91px 15px #A2B4B6;
+}
+
+.unclicked {
+  background: linear-gradient(145deg, #7F8C8E, #ABBEC0);
+  border-radius: 15%;
+  box-shadow: 9.91px 9.91px 15px #889698, -9.91px -9.91px 15px #A2B4B6;
+}
+
+.hovered {
+  cursor: pointer;
+  background: #95A5A7;
+  border-radius: 15%;
+  box-shadow: 9.91px 9.91px 15px #889698, -9.91px -9.91px 15px #A2B4B6;
+}
+
+/** end neumorphic styles **/
+
+
+/** animations **/
+
+@-webkit-keyframes slideIn {
+  from {bottom: -300px; opacity: 0} 
+  to {bottom: 0; opacity: 1}
+}
+
+@keyframes slideIn {
+  from {bottom: -300px; opacity: 0}
+  to {bottom: 0; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+/** end animations **/
