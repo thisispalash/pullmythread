@@ -55,6 +55,7 @@ export default function Home() {
     setColor(`hsl(${data.hue}, ${data.saturation}%, 50%)`);
     setBgColor(`hsla(${data.hue}, ${data.saturation}%, 50%, 0.1)`);
     setTitle(data.title);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
   // Modify the useEffect to handle the telescopic text functionality
@@ -100,18 +101,18 @@ export default function Home() {
       
       links.forEach(link => {
         // Remove existing listeners to prevent duplicates
-        link.removeEventListener('click', handleTelescopicClick);
+        link.removeEventListener('click', handleTelescopicClick as EventListener);
         // Add fresh listener
-        link.addEventListener('click', handleTelescopicClick);
+        link.addEventListener('click', handleTelescopicClick as EventListener);
       });
     };
     
     // Separate the click handler function
-    const handleTelescopicClick = (e) => {
+    const handleTelescopicClick = (e: MouseEvent) => {
       e.preventDefault();
       console.log("Telescopic link clicked");
       
-      const link = e.currentTarget;
+      const link = e.currentTarget as HTMLElement;
       if (!link) return; // Safety check
       
       const openedby = link.getAttribute('data-o');
@@ -192,7 +193,7 @@ export default function Home() {
       // Remove event listeners
       try {
         document.querySelectorAll('a[data-o]').forEach(link => {
-          link.removeEventListener('click', handleTelescopicClick);
+          link.removeEventListener('click', handleTelescopicClick as EventListener);
         });
         console.log("Event listeners removed");
       } catch (error) {
