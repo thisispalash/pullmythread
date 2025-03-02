@@ -44,6 +44,7 @@ export default function ShuffleButton({ color, bgColor, onShuffle }: { color: st
         'flex items-center justify-center',
         'transition-all duration-200',
         'text-[var(--shuffle-color)] hover:text-[var(--shuffle-hover-color)]',
+        'md:mb-18 md:mr-12'
       )}
       onClick={onShuffle}
     >
